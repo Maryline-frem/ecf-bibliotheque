@@ -7,6 +7,6 @@ php bin/console doctrine:migrations:migrate --no-interaction
 # validation du schéma de BDD
 php bin/console doctrine:schema:validate
 # injection des données de test dans la BDD
-php bin/console doctrine:fixtures:load --group=test --no-interaction
+php bin/console doctrine:fixtures:load --no-interaction
 
-# chmod +x bin/domimi.sh => permet de rendre exécutable le script
+# chmod +x bin/dofilo.sh => permet de rendre exécutable le script
