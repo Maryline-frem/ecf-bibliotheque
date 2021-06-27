@@ -36,19 +36,23 @@ class AppFixtures extends Fixture
     {
         // Définition du nombre d'objets qu'il faut créer.
         $borrowerCount = 100;
-        $usersPerBorrower = 1;
+        $booksCount = 1000;
+        $authorCount = 500;
+        // $usersPerBorrower = 1;
+        $booksPerAuthor = $this->faker->randomNumber($nbDigits = NULL, $strict = false);
 
-        // Le nombre de users à créer dépend du nombre d'emprunteur.
-        $usersCount = $usersPerBorrower * $borrowerCount;
+        // // Le nombre de users à créer dépend du nombre d'emprunteur.
+        // $usersCount = $usersPerBorrower * $borrowerCount;
 
         // Appel des fonctions qui vont créer les objets dans la BDD.
         // La fonction loadAdmins() ne renvoit pas de données mais les autres
         // fontions renvoit des données qui sont nécessaires à d'autres fonctions.
         $this->loadAdmins($manager);
         // La fonction loadStudents() a besoin de la liste des school years.
-        $users = $this->loadUsers($manager, $usersCount);
-        // $borrowers = $this->loadBorrowers($manager, $borrowerCount);
-        
+        // $users = $this->loadUsers($manager, $usersCount);
+        $borrowers = $this->loadBorrowers($manager, $borrowerCount);
+        // $books = $this->loadBooks($manager, $authors, $booksPerAuthor, $booksCount); -> A REVOIR  
+        $authors = $this->loadAuthors($manager, $authorCount);     
 
         //$users = $this->loadUsers($manager,100);
 
@@ -68,12 +72,35 @@ class AppFixtures extends Fixture
         $manager->persist($user);
     }
 
-    public function loadUsers(ObjectManager $manager, int $count)
+    // public function loadUsers(ObjectManager $manager, int $count)
+    // {
+    //     $users = [];
+
+    //     for ($i = 0; $i < $count; $i++) {
+    //         // Création d'un nouveau user.
+    //         $user = new User();
+    //         $user->setEmail($this->faker->email());
+    //         // Hachage du mot de passe.
+    //         $password = $this->encoder->encodePassword($user, '123');
+    //         $user->setPassword($password);
+    //         // Le format de la chaîne de caractères ROLE_FOO_BAR_BAZ
+    //         // est libre mais il vaut mieux suivre la convention
+    //         // proposée par Symfony.
+    //         $user->setRoles(['ROLE_EMPRUNTEUR']);
+
+    //         // Demande d'enregistrement d'un objet dans la BDD.
+    //         $manager->persist($user);
+    //         $users[] = $user;
+    //     }
+    //     return $users;
+    // }
+
+    public function loadBorrowers(ObjectManager $manager, int $count)
     {
-        $users = [];
+        $borrowers = [];
 
         for ($i = 0; $i < $count; $i++) {
-            // Création d'un nouveau user.
+
             $user = new User();
             $user->setEmail($this->faker->email());
             // Hachage du mot de passe.
@@ -82,29 +109,18 @@ class AppFixtures extends Fixture
             // Le format de la chaîne de caractères ROLE_FOO_BAR_BAZ
             // est libre mais il vaut mieux suivre la convention
             // proposée par Symfony.
-            $user->setRoles(['ROLE_USER']);
+            $user->setRoles(['ROLE_EMPRUNTEUR']);
 
             // Demande d'enregistrement d'un objet dans la BDD.
             $manager->persist($user);
-            $users[] = $user;
-        }
-        return $users;
-    }
 
-    public function loadBorrowers(ObjectManager $manager, int $count)
-    {
-        $borrowers = [];
-
-        for ($i = 0; $i < $count; $i++) {
             // Création d'un nouvel emprunteur.
             $borrower = new Borrower();
             $borrower->setFirstname($this->faker->firstname());
             $borrower->setLastname($this->faker->lastname());
             $borrower->setPhone($this->faker->phoneNumber());
             $borrower->setActive($this->faker->boolean());
-           
-            $borrower->setCreationDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2010-01-01 00:00:00'));
-
+            $borrower->setCreationDate($this->faker->dateTimeThisDecade());
             $borrower->setUser($user);
 
             // Demande d'enregistrement d'un objet dans la BDD.
@@ -113,5 +129,51 @@ class AppFixtures extends Fixture
             $borrowers[] = $borrower;
         }
         return $borrowers;
+    }
+
+    public function loadBooks(ObjectManager $manager, array $authors, int $booksPerAuthor, int $count)
+    {
+        $books = [];
+        $authorIndex = 0;
+
+        for ($i = 0; $i < $count; $i++) {
+            $author = $authors[$authorIndex];
+
+            if ($i % $booksPerAuthor == 0) {
+                $authorIndex++;
+            }
+
+            // Création d'un nouveau livre.
+            $book = new Book();
+            $book->setTitle($this->faker->sentence($nbWords = 3, $variableNbWords = true));
+            $book->setEditionYear($this->faker->year($max = 'now'));
+            $book->setPageNumber($this->faker->numberBetween($min = 50, $max = 1000));
+            $book->setCodeIsbn($this->faker->isbn13());
+            $book->setAuthor($author);
+
+            // Demande d'enregistrement d'un objet dans la BDD.
+            $manager->persist($book);
+            $books[] = $book;
+        }
+        return $books;
+    }
+
+    public function loadAuthors(ObjectManager $manager, int $count)
+    {
+        $authors = [];
+
+        for ($i = 0; $i < $count; $i++) {
+
+            // Création d'un nouvel auteur.
+            $author = new Author();
+            $author->setFirstname($this->faker->firstname());
+            $author->setLastname($this->faker->lastname());
+
+            // Demande d'enregistrement d'un objet dans la BDD.
+            $manager->persist($author);
+
+            $authors[] = $author;
+        }
+        return $authors;
     }
 }
