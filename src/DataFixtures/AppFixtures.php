@@ -40,21 +40,20 @@ class AppFixtures extends Fixture
         $booksCount = 1000;
         $authorCount = 500;
         $kindCount = 10;
+        $borrowingsCount = 200;
 
         // Création du tableau Kind
         $listKind = ['Poésie', 'Nouvelle', 'Roman historique', 'Roman d\'amour', 'Roman d\'aventure', 'Science-fiction', 'Fantaisy', 'Biographie', 'Conte', 'Témoignage', 'Théâtre', 'Essai', 'Journal intime'];
-        // $booksPerAuthor = $this->faker->randomNumber($nbDigits = NULL, $strict = false);
-        // $booksPerKind = $this->faker->randomNumber($nbDigits = NULL, $strict = false);
 
         // Appel des fonctions qui vont créer les objets dans la BDD.
         // La fonction loadAdmins() ne renvoit pas de données mais les autres
         // fontions renvoit des données qui sont nécessaires à d'autres fonctions.
         $this->loadAdmins($manager);
-        // $users = $this->loadUsers($manager, $usersCount);
         $borrowers = $this->loadBorrowers($manager, $borrowerCount);
         $authors = $this->loadAuthors($manager, $authorCount);
         $kinds = $this->loadKinds($manager, $listKind);
-        $books = $this->loadBooks($manager, $authors, $kinds, $booksCount);  
+        $books = $this->loadBooks($manager, $authors, $kinds, $booksCount);
+        $borrowings = $this->loadBorrowings($manager, $borrowers, $books, $borrowingsCount);    
 
         // Exécution des requêtes.
         // C-à-d envoi de la requête SQL à la BDD.
@@ -242,6 +241,76 @@ class AppFixtures extends Fixture
             $books[] = $book;
         }
         return $books;
+    }
+
+    public function loadBorrowings(ObjectManager $manager, array $borrowers, $books, int $count)
+    {
+        $borrowings = [];
+
+        // Création d'un nouvel emprunt.
+        $borrowing = new Borrowing();
+        $borrowing->setBorrowingDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-02-01 10:00:00'));
+        // récupération de la date de début
+        $borrowingDate = $borrowing->getBorrowingDate();
+        // création de la date de fin à partir de la date de début
+        $returnDate = \DateTime::createFromFormat('Y-m-d H:i:s', $borrowingDate->format('Y-m-d H:i:s'));
+        // ajout d'un interval de 3 mois à la date de début
+        $returnDate->add(new \DateInterval('P1M'));
+        $borrowing->setReturnDate($returnDate);
+        $borrowing->setBorrower($borrowers[0]);
+        $borrowing->setBook($books[0]);
+
+        $manager->persist($borrowing);
+
+        $borrowings[] = $borrowing;
+
+        // Création d'un nouvel emprunt.
+        $borrowing = new Borrowing();
+        $borrowing->setBorrowingDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-03-01 10:00:00'));
+        // récupération de la date de début
+        $borrowingDate = $borrowing->getBorrowingDate();
+        // création de la date de fin à partir de la date de début
+        $returnDate = \DateTime::createFromFormat('Y-m-d H:i:s', $borrowingDate->format('Y-m-d H:i:s'));
+        // ajout d'un interval de 3 mois à la date de début
+        $returnDate->add(new \DateInterval('P1M'));
+        $borrowing->setReturnDate($returnDate);
+        $borrowing->setBorrower($borrowers[1]);
+        $borrowing->setBook($books[1]);
+
+        $manager->persist($borrowing);
+
+        $borrowings[] = $borrowing;
+
+        // Création d'un nouvel emprunt.
+        $borrowing = new Borrowing();
+        $borrowing->setBorrowingDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-04-01 10:00:00'));
+        $borrowing->setBorrower($borrowers[2]);
+        $borrowing->setBook($books[2]);
+
+        $manager->persist($borrowing);
+
+        $borrowings[] = $borrowing;
+
+        for ($i = 2; $i < $count; $i++) {
+
+            // Création d'un nouvel emprunt.
+            $borrowing = new Borrowing();
+            $borrowing->setBorrowingDate($this->faker->dateTimeThisDecade());
+            // récupération de la date de début
+            $borrowingDate = $borrowing->getBorrowingDate();
+            // création de la date de fin à partir de la date de début
+            $returnDate = \DateTime::createFromFormat('Y-m-d H:i:s', $borrowingDate->format('Y-m-d H:i:s'));
+            // ajout d'un interval de 3 mois à la date de début
+            $returnDate->add(new \DateInterval('P1M'));
+            $borrowing->setReturnDate($returnDate);
+            $borrowing->setBorrower($this->faker->randomElement($borrowers));
+            $borrowing->setBook($this->faker->randomElement($books));
+
+            $manager->persist($borrowing);
+
+            $borrowings[] = $borrowing;
+        }
+        return $borrowings;
     }
 
     public function loadAuthors(ObjectManager $manager, int $count)
