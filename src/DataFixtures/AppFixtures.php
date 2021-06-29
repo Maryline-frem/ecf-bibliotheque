@@ -52,9 +52,9 @@ class AppFixtures extends Fixture
         $this->loadAdmins($manager);
         // $users = $this->loadUsers($manager, $usersCount);
         $borrowers = $this->loadBorrowers($manager, $borrowerCount);
-        $books = $this->loadBooks($manager, $authors, $Kinds, $booksCount);
         $authors = $this->loadAuthors($manager, $authorCount);
-        $kinds = $this->loadKinds($manager, $listKind);     
+        $kinds = $this->loadKinds($manager, $listKind);
+        $books = $this->loadBooks($manager, $authors, $kinds, $booksCount);  
 
         // Exécution des requêtes.
         // C-à-d envoi de la requête SQL à la BDD.
@@ -235,7 +235,7 @@ class AppFixtures extends Fixture
             $book->setPageNumber($this->faker->numberBetween($min = 50, $max = 1000));
             $book->setCodeIsbn($this->faker->isbn13());
             $book->setAuthor($this->faker->randomElement($authors));
-            $book->addKind($this->faker->randomElement($authors));
+            $book->addKind($this->faker->randomElement($kinds));
 
             // Demande d'enregistrement d'un objet dans la BDD.
             $manager->persist($book);
