@@ -16,6 +16,12 @@ Ensuite créez le schéma de la BDD et injectez les données de test avec la com
 
     bin/dofilo.sh
 
+## Utilisation
+
+    symfony serve
+
+Ensuite visitez la page [http://localhost:8000](http://localhost:8000).
+
 ## Prérequis
 
 - MariaDB
