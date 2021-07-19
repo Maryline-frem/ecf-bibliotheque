@@ -53,7 +53,7 @@ class BookRepository extends ServiceEntityRepository
             ->innerJoin('b.kinds', 'k')
             ->andWhere('k.lastname LIKE :kind')
             ->setParameter('kind', "%{$kind}%")
-            ->orderBy('b.lastname', 'ASC')
+            ->orderBy('b.title', 'ASC')
             ->getQuery()
             ->getResult()
         ;

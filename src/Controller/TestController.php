@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Author;
 use App\Entity\Book;
+use App\Entity\Borrower;
 use App\Entity\Kind;
 use App\Entity\User;
+use App\Repository\AuthorRepository;
 use App\Repository\BookRepository;
 use App\Repository\BorrowerRepository;
 use App\Repository\KindRepository;
@@ -22,10 +25,13 @@ class TestController extends AbstractController
      * @Route("/", name="test")
      */
     public function index(
+        AuthorRepository $authorRepository,
         BookRepository $bookRepository,
+        BorrowerRepository $borrowerRepository,
         KindRepository $kindRepository,
         UserRepository $userRepository): Response
     {
+        // Les utilisateurs
         // Récupération de l'entity manager.
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -46,6 +52,8 @@ class TestController extends AbstractController
         $users = $userRepository->findByRole('ROLE_EMPRUNTEUR');
         // dump($users);
 
+
+        // Les livres
         // Récupération de la liste complète de tous les livres.
         $books = $bookRepository->findAll();
         // dump($books);
@@ -61,19 +69,81 @@ class TestController extends AbstractController
 
         // Récupération de la liste des livres dont l'id de l'auteur est `2`.
         $book = $bookRepository->findByAuthor(2);
-        dump($book);
+        // dump($book);
 
         // Récupération de la liste des livres dont le genre contient le mot clé `roman`.
-        // A revoir
-        // $kind = 'Roman';
-        // $book = $bookRepository->findByTitle($kind);
+        $kind = 'Roman';     
+        $book = $bookRepository->findByKind($kind);
         // dump($book);
 
         // Ajouter un nouveau livre.
+        // Récupération de la liste complète des authors.
+        $authors = $authorRepository->findAll();
+        // Affectation de l'author à la variable $author2.
+        $author2 = $authors[2];
+
+        // Récupération de la liste complète des kinds.
+        $kinds = $kindRepository->findAll();
+        // Affectation de l'kind à la variable $kind6.
+        $kind6 = $kinds[6];
+
+        $book = new Book();
+        $book->setTitle('Totum autem id externum');
+        $book->setEditionYear('2020');
+        $book->setPageNumber('300');
+        $book->setCodeIsbn('9790412882714');
+        $book->setAuthor($author2);
+        $book->addKind($kind6);
+
+        $entityManager->flush();
+        dump($book);
 
         // Requêtes de mise à jour.
 
         // Supprimer le livre dont l'id est `123`.
+
+
+        // Les emprunteurs
+        // La liste complète des emprunteurs
+        $borrowers = $borrowerRepository->findAll();
+        // dump($borrowers);
+
+        // Les données de l'emprunteur dont l'id est `3`.
+        $borrower = $borrowerRepository->find(3);
+        // dump($borrower);
+
+        // Les données de l'emprunteur qui est relié au user dont l'id est `3`.
+        $borrower = $borrowerRepository->findByUser(3);
+        // dump($borrower);
+
+        // La liste des emprunteurs dont le nom ou le prénom contient le mot clé `foo`.
+        $name = 'foo';
+        $borrowers = $borrowerRepository->findByFirstnameOrLastname($name);
+        // dump($borrowers);
+
+        // La liste des emprunteurs dont le téléphone contient le mot clé `1234`.
+        $phone = '1234';
+        $borrower = $borrowerRepository->findByPhone($phone);
+        // dump($borrower);
+
+        // La liste des emprunteurs dont la date de création est antérieure au 01/03/2021 exclu.
+
+        // La liste des emprunteurs inactifs (c-à-d dont l'attribut `actif` est égal à `false`).
+
+
+        // Les emprunts
+        // La liste des 10 derniers emprunts au niveau chronologique.
+
+        // La liste des emprunts de l'emprunteur dont l'id est `2`.
+
+        // La liste des emprunts du livre dont l'id est `3`.
+
+        // La liste des emprunts qui ont été retournés avant le 01/01/2021.
+
+        // La liste des emprunts qui n'ont pas encore été retournés (c-à-d dont la date de retour est nulle).
+
+        // Les données de l'emprunt du livre dont l'id est `3` et qui n'a pas encore été retournés (c-à-d dont la date de retour est nulle).
+
         exit();
     }
 }
