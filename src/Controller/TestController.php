@@ -80,12 +80,12 @@ class TestController extends AbstractController
         // Récupération de la liste complète des authors.
         $authors = $authorRepository->findAll();
         // Affectation de l'author à la variable $author2.
-        $author2 = $authors[2];
+        $author2 = $authors[1];
 
         // Récupération de la liste complète des kinds.
         $kinds = $kindRepository->findAll();
         // Affectation de l'kind à la variable $kind6.
-        $kind6 = $kinds[6];
+        $kind6 = $kinds[5];
 
         $book = new Book();
         $book->setTitle('Totum autem id externum');
@@ -95,12 +95,39 @@ class TestController extends AbstractController
         $book->setAuthor($author2);
         $book->addKind($kind6);
 
-        $entityManager->flush();
-        dump($book);
+        // $entityManager->flush();
+        // dump($book);
 
         // Requêtes de mise à jour.
+        // Récupération de la liste complète des kinds.
+        $kinds = $kindRepository->findAll();
+        // Affectation de kind à la variable $kind5.
+        $kind2 = $kinds[1];
+        // Affectation de kind à la variable $kind5.
+        $kind5 = $kinds[4];
+        // Récupération du deuxième book.
+        $book = $bookRepository->findAll()[1];
+        // dump($book);
+        // Changement du titre du book.
+        $book->setTitle('Aperiendum est igitur');
+        // Suppression d'une relation avec un kind.
+        $book->removeKind($kind2);
+        // Changement du kind du book.
+        $book->addKind($kind5);
+        // Exécution des requêtes.
+        // C-à-d envoi de la requête SQL à la BDD.
+        // $entityManager->flush();
+        // dump($book);
 
         // Supprimer le livre dont l'id est `123`.
+        // Récupération de la liste complète des books.
+        $books = $bookRepository->findAll();
+        // Affectation de book à la variable $book123.
+        $book123 = $books[122];
+        // Suppression d'un book.
+        $entityManager->remove($book123);
+        // $entityManager->flush();
+        // dump($book123);
 
 
         // Les emprunteurs
@@ -127,9 +154,14 @@ class TestController extends AbstractController
         // dump($borrower);
 
         // La liste des emprunteurs dont la date de création est antérieure au 01/03/2021 exclu.
+        // if ($creationDate->getCreationDate() < '2021-03-01 00:00:00') {
+        //     dump($creationDate);
+        // }
 
         // La liste des emprunteurs inactifs (c-à-d dont l'attribut `actif` est égal à `false`).
-
+        // if ($borrower->getActive() != true) {
+        //     dump($borrower);
+        // }
 
         // Les emprunts
         // La liste des 10 derniers emprunts au niveau chronologique.
