@@ -95,7 +95,8 @@ class TestController extends AbstractController
         $book->setAuthor($author2);
         $book->addKind($kind6);
 
-        // $entityManager->flush();
+        $entityManager->persist($book);
+        $entityManager->flush();
         // dump($book);
 
         // Requêtes de mise à jour.
@@ -107,7 +108,6 @@ class TestController extends AbstractController
         $kind5 = $kinds[4];
         // Récupération du deuxième book.
         $book = $bookRepository->findAll()[1];
-        // dump($book);
         // Changement du titre du book.
         $book->setTitle('Aperiendum est igitur');
         // Suppression d'une relation avec un kind.
@@ -116,18 +116,26 @@ class TestController extends AbstractController
         $book->addKind($kind5);
         // Exécution des requêtes.
         // C-à-d envoi de la requête SQL à la BDD.
-        // $entityManager->flush();
+        $entityManager->flush();
         // dump($book);
 
-        // Supprimer le livre dont l'id est `123`.
-        // Récupération de la liste complète des books.
-        $books = $bookRepository->findAll();
-        // Affectation de book à la variable $book123.
-        $book123 = $books[122];
-        // Suppression d'un book.
-        $entityManager->remove($book123);
+        // // Supprimer le livre dont l'id est `123`.
+        // // Récupération de la liste complète des books.
+        // $books = $bookRepository->findAll();
+        // // Affectation de book à la variable $book123.
+        // $book123 = $books[122];
+        // // Suppression d'un book.
+        // $entityManager->remove($book123);
         // $entityManager->flush();
         // dump($book123);
+
+        // // Supprimer le livre dont l'id est `123`.
+        // $id = [123];
+        // $book = $bookRepository->find($id);
+        // // Suppression d'un book.
+        // $entityManager->remove($book);
+        // $entityManager->flush();
+        // // dump($book123);
 
 
         // Les emprunteurs
@@ -162,6 +170,7 @@ class TestController extends AbstractController
         // if ($borrower->getActive() != true) {
         //     dump($borrower);
         // }
+
 
         // Les emprunts
         // La liste des 10 derniers emprunts au niveau chronologique.
