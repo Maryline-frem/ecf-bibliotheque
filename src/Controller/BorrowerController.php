@@ -53,6 +53,16 @@ class BorrowerController extends AbstractController
      */
     public function show(Borrower $borrower): Response
     {
+        // Un borrower n'a pas le droit de consulter le profil d'un autre borrower.  
+        // On vérifie si l'utilisateur est un borrower et si c'est le cas,
+        // on vérifie s'il demande le même profile que son profile borrower.
+        // S'il demande le profile d'un autre utilisateur on le redirige vers
+        // son propre profile.
+        $response = $this->redirectBorrower('borrower_show', $borrower, $borrowerRepository);
+
+        if ($response) {
+            return $response;
+        }
         return $this->render('borrower/show.html.twig', [
             'borrower' => $borrower,
         ]);
