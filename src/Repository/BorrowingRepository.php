@@ -19,9 +19,29 @@ class BorrowingRepository extends ServiceEntityRepository
         parent::__construct($registry, Borrowing::class);
     }
 
-    // /**
-    //  * @return Borrowing[] Returns an array of Borrowing objects
-    //  */
+    /**
+     * @return Borrowing[] Returns an array of Borrowing objects
+     */
+
+    public function findByReturnDate($value)
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.returnDate < :value')
+            ->setParameter('value', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByReturn($value)
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.returnDate IS NULL')
+            ->setParameter('value', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
     /*
     public function findByExampleField($value)
     {

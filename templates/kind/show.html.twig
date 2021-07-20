@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kind{% endblock %}
+
+{% block body %}
+    <h1>Kind</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ kind.id }}</td>
+            </tr>
+            <tr>
+                <th>Lastname</th>
+                <td>{{ kind.lastname }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ kind.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('kind_index') }}">back to list</a>
+
+    <a href="{{ path('kind_edit', {'id': kind.id}) }}">edit</a>
+
+    {{ include('kind/_delete_form.html.twig') }}
+{% endblock %}

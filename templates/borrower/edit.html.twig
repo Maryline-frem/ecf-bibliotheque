@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Borrower{% endblock %}
+
+{% block body %}
+    <h1>Edit Borrower</h1>
+
+    {{ include('borrower/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('borrower_index') }}">back to list</a>
+
+    {{ include('borrower/_delete_form.html.twig') }}
+{% endblock %}

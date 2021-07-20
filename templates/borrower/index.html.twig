@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Borrower index{% endblock %}
+
+{% block body %}
+    <h1>Borrower index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Lastname</th>
+                <th>Firstname</th>
+                <th>Phone</th>
+                <th>Active</th>
+                <th>CreationDate</th>
+                <th>ModificationDate</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for borrower in borrowers %}
+            <tr>
+                <td>{{ borrower.id }}</td>
+                <td>{{ borrower.lastname }}</td>
+                <td>{{ borrower.firstname }}</td>
+                <td>{{ borrower.phone }}</td>
+                <td>{{ borrower.active ? 'Yes' : 'No' }}</td>
+                <td>{{ borrower.creationDate ? borrower.creationDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ borrower.modificationDate ? borrower.modificationDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('borrower_show', {'id': borrower.id}) }}">show</a>
+                    <a href="{{ path('borrower_edit', {'id': borrower.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('borrower_new') }}">Create new</a>
+{% endblock %}

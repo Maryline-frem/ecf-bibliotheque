@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Borrower{% endblock %}
+
+{% block body %}
+    <h1>Borrower</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ borrower.id }}</td>
+            </tr>
+            <tr>
+                <th>Lastname</th>
+                <td>{{ borrower.lastname }}</td>
+            </tr>
+            <tr>
+                <th>Firstname</th>
+                <td>{{ borrower.firstname }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{ borrower.phone }}</td>
+            </tr>
+            <tr>
+                <th>Active</th>
+                <td>{{ borrower.active ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>CreationDate</th>
+                <td>{{ borrower.creationDate ? borrower.creationDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>ModificationDate</th>
+                <td>{{ borrower.modificationDate ? borrower.modificationDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('borrower_index') }}">back to list</a>
+
+    <a href="{{ path('borrower_edit', {'id': borrower.id}) }}">edit</a>
+
+    {{ include('borrower/_delete_form.html.twig') }}
+{% endblock %}

@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\Borrower;
+use App\Entity\Borrowing;
 use App\Entity\Kind;
 use App\Entity\User;
 use App\Repository\AuthorRepository;
 use App\Repository\BookRepository;
 use App\Repository\BorrowerRepository;
+use App\Repository\BorrowingRepository;
 use App\Repository\KindRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,6 +30,7 @@ class TestController extends AbstractController
         AuthorRepository $authorRepository,
         BookRepository $bookRepository,
         BorrowerRepository $borrowerRepository,
+        BorrowingRepository $borrowingRepository,
         KindRepository $kindRepository,
         UserRepository $userRepository): Response
     {
@@ -162,14 +165,14 @@ class TestController extends AbstractController
         // dump($borrower);
 
         // La liste des emprunteurs dont la date de création est antérieure au 01/03/2021 exclu.
-        // if ($creationDate->getCreationDate() < '2021-03-01 00:00:00') {
-        //     dump($creationDate);
-        // }
+        $date = '2021-03-01';
+        $borrowers = $borrowerRepository->findByCreationDate($date);
+        // dump($borrowers);
 
         // La liste des emprunteurs inactifs (c-à-d dont l'attribut `actif` est égal à `false`).
-        // if ($borrower->getActive() != true) {
-        //     dump($borrower);
-        // }
+        $isActive = false;
+        $borrowers = $borrowerRepository->findByActive($isActive);
+        // dump($borrowers);
 
 
         // Les emprunts
@@ -180,10 +183,48 @@ class TestController extends AbstractController
         // La liste des emprunts du livre dont l'id est `3`.
 
         // La liste des emprunts qui ont été retournés avant le 01/01/2021.
+        $date = '2021-01-01';
+        $borrowings = $borrowingRepository->findByReturnDate($date);
+        // dump($borrowings);
 
         // La liste des emprunts qui n'ont pas encore été retournés (c-à-d dont la date de retour est nulle).
+        // A REVOIR
+        $notReturn = NULL;
+        $borrowings = $borrowingRepository->findByReturn($notReturn);
+        // dump($borrowings);
 
         // Les données de l'emprunt du livre dont l'id est `3` et qui n'a pas encore été retournés (c-à-d dont la date de retour est nulle).
+
+
+        // Requêtes de création.
+        // Récupération de la liste complète des borrowers.
+        $borrowers = $borrowerRepository->findAll();
+        // Affectation d'un borrower à la variable $borrower.
+        $borrower = $borrowers[0];
+        // Récupération de la liste complète des books.
+        $books = $bookRepository->findAll();
+        // Affectation d'un book à la variable $book.
+        $book = $books[0];
+        // Création d'un nouvel emprunt.
+        $borrowing = new Borrowing();
+        $borrowing->setBorrowingDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-12-01 16:00:00'));
+        $borrowing->setBorrower($borrower);
+        $borrowing->setBook($book);
+
+        // $entityManager->persist($borrowing);
+        // $entityManager->flush();
+        // dump($borrowing);
+
+        // Requêtes de mise à jour.
+        // Modifier l'emprunt dont l'id est `3`.
+        $borrowing = $borrowingRepository->findAll()[2];
+        
+        // $borrowing->setReturnDate('Y-m-d H:i:s', '2020-05-01 10:00:00');
+        // $entityManager->flush();
+        // dump($borrowing);
+
+        // Requêtes de suppression.
+        // Supprimer l'emprunt dont l'id est `42`.
 
         exit();
     }

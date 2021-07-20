@@ -63,6 +63,26 @@ class BorrowerRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByCreationDate($value)
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.creationDate < :value')
+            ->setParameter('value', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByActive($value)
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.active = :value')
+            ->setParameter('value', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     /*
     public function findByExampleField($value)
     {
