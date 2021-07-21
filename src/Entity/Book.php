@@ -182,4 +182,19 @@ class Book
 
         return $this;
     }
+
+    public function isAvaible(): bool
+    {
+        // S'il n'y a pas d'emprunt, le livre est dispo
+        // S'il y a des emprunts mais qu'ils ont tous été retournés,
+        // alors le livre est dispo.
+
+        // loan == borrowing
+        foreach ($this->getBorrowings() as $borrowing) {
+            if ($borrowing->getReturnDate() == null) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

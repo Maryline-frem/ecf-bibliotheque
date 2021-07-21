@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\User;
+use App\Repository\BorrowerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,12 +32,18 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     private $csrfTokenManager;
     private $passwordEncoder;
 
-    public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager, 
+        UrlGeneratorInterface $urlGenerator, 
+        CsrfTokenManagerInterface $csrfTokenManager, 
+        UserPasswordEncoderInterface $passwordEncoder,
+        BorrowerRepository $borrowerRepository
+    ) {
         $this->entityManager = $entityManager;
         $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->passwordEncoder = $passwordEncoder;
+        $this->BorrowerRepository = $borrowerRepository;
     }
 
     public function supports(Request $request)
@@ -95,8 +102,25 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             return new RedirectResponse($targetPath);
         }
 
-        // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        $user = $token->getUser();
+
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            $url = $this->urlGenerator->generate('borrower_index');
+        } elseif (in_array('ROLE_EMPRUNTEUR', $user->getRoles())) {
+            $borrower = $this->borrowerRepository->findOneByUser($user);
+
+            if (!$borrower) {
+                throw new \Exception("Cet utilisateur n'est rattaché à aucun profil : {$user->getId()} {$user->getEmail()}");
+            }
+
+            $url = $this->urlGenerator->generate('borrower_show', [
+                'id' => $borrower->getId(),
+            ]);
+        } else {
+            throw new \Exception("Votre rôle n'est pas reconnu");
+        }
+
+        return new RedirectResponse($url);
     }
 
     protected function getLoginUrl()
