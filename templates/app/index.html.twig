@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AppController!{% endblock %}
+{% block title %}Bibliothèque{% endblock %}
 
 {% block body %}
 <style>
@@ -9,12 +9,18 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/nico/projects/ecf-bibliotheque/src/Controller/AppController.php'|file_link(0) }}">src/Controller/AppController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/nico/projects/ecf-bibliotheque/templates/app/index.html.twig'|file_link(0) }}">templates/app/index.html.twig</a></code></li>
-    </ul>
+    <h1>Bienvenue sur notre bibliothèque</h1>
+    <h2>Voici le catalogue de nos livres</h2>
+    {% for book in books %}
+            <tr>
+                <td>
+                    <a href="{{ path('book_show', {'id': book.id}) }}">{{ book.title }}</a><br>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
 </div>
 {% endblock %}
