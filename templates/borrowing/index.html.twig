@@ -11,7 +11,10 @@
                 <th>Id</th>
                 <th>BorrowingDate</th>
                 <th>ReturnDate</th>
+                {# liens seulement pour les admins #}
+                {% if is_granted('ROLE_ADMIN') %}
                 <th>actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -20,10 +23,13 @@
                 <td>{{ borrowing.id }}</td>
                 <td>{{ borrowing.borrowingDate ? borrowing.borrowingDate|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ borrowing.returnDate ? borrowing.returnDate|date('Y-m-d H:i:s') : '' }}</td>
+                {# liens seulement pour les admins #}
+                {% if is_granted('ROLE_ADMIN') %}
                 <td>
                     <a href="{{ path('borrowing_show', {'id': borrowing.id}) }}">show</a>
                     <a href="{{ path('borrowing_edit', {'id': borrowing.id}) }}">edit</a>
                 </td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>

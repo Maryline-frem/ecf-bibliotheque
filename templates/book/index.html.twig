@@ -13,6 +13,8 @@
                 <th>EditionYear</th>
                 <th>PageNumber</th>
                 <th>CodeIsbn</th>
+                <th>Author</th>
+                <th>Kind</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -24,6 +26,16 @@
                 <td>{{ book.editionYear }}</td>
                 <td>{{ book.pageNumber }}</td>
                 <td>{{ book.codeIsbn }}</td>
+                {% for author in authors %}
+                    <tr>
+                        <td>{{ author.lastname }} {{ author.firstname }}</td>
+                    </tr>                   
+                {% else %}
+                {% for kind in kinds %}
+                    <tr>
+                        <td>{{ kind.lastname }}</td>
+                    </tr> 
+                {% else %}
                 <td>
                     <a href="{{ path('book_show', {'id': book.id}) }}">show</a>
                     <a href="{{ path('book_edit', {'id': book.id}) }}">edit</a>

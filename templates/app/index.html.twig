@@ -12,15 +12,15 @@
     <h1>Bienvenue sur notre bibliothèque</h1>
     <h2>Voici le catalogue de nos livres</h2>
     {% for book in books %}
-            <tr>
-                <td>
-                    <a href="{{ path('book_show', {'id': book.id}) }}">{{ book.title }}</a><br>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
+        <tr>
+            <td>
+                <a href="{{ path('book_show', {'id': book.id}) }}">{{ book.title }}</a><br>
+            </td>
+        </tr>
+    {% else %}
+            <tr
+            <td colspan="6">no records found</td>
+        </tr>
+    {% endfor %}
 </div>
 {% endblock %}

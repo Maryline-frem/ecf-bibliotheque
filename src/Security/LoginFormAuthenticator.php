@@ -3,7 +3,7 @@
 namespace App\Security;
 
 use App\Entity\User;
-use App\Repository\BorrowerRepository;
+use App\Repository\BorrowingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,13 +37,13 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         UrlGeneratorInterface $urlGenerator, 
         CsrfTokenManagerInterface $csrfTokenManager, 
         UserPasswordEncoderInterface $passwordEncoder,
-        BorrowerRepository $borrowerRepository
+        BorrowingRepository $borrowingRepository
     ) {
         $this->entityManager = $entityManager;
         $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->passwordEncoder = $passwordEncoder;
-        $this->BorrowerRepository = $borrowerRepository;
+        $this->BorrowingRepository = $borrowingRepository;
     }
 
     public function supports(Request $request)
@@ -105,17 +105,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         $user = $token->getUser();
 
         if (in_array('ROLE_ADMIN', $user->getRoles())) {
-            $url = $this->urlGenerator->generate('borrower_index');
+            $url = $this->urlGenerator->generate('borrowing_index');
         } elseif (in_array('ROLE_EMPRUNTEUR', $user->getRoles())) {
-            $borrower = $this->borrowerRepository->findOneByUser($user);
-
-            if (!$borrower) {
-                throw new \Exception("Cet utilisateur n'est rattaché à aucun profil : {$user->getId()} {$user->getEmail()}");
-            }
-
-            $url = $this->urlGenerator->generate('borrower_show', [
-                'id' => $borrower->getId(),
-            ]);
+            $url = $this->urlGenerator->generate('borrowing_index');
         } else {
             throw new \Exception("Votre rôle n'est pas reconnu");
         }
