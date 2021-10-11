@@ -24,10 +24,42 @@ class BorrowingRepository extends ServiceEntityRepository
      * @return Borrowing[] Returns an array of Borrowing objects
      */
 
+    public function findByBorrowing()
+    {
+        return $this->createQueryBuilder('b')
+            ->orderBy('b.borrowing_date', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByBorrower($value)
+    {
+        return $this->createQueryBuilder('b')
+            ->innerJoin('b.borrower', 'k')
+            ->andWhere('k.id = :value')
+            ->setParameter('value', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByBook($value)
+    {
+        return $this->createQueryBuilder('b')
+            ->innerJoin('b.book', 'k')
+            ->andWhere('k.id = :value')
+            ->setParameter('value', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findByReturnDate($value)
     {
         return $this->createQueryBuilder('d')
-            ->andWhere('d.returnDate < :value')
+            ->andWhere('d.return_date < :value')
             ->setParameter('value', $value)
             ->getQuery()
             ->getResult()
@@ -37,8 +69,19 @@ class BorrowingRepository extends ServiceEntityRepository
     public function findByReturn($value)
     {
         return $this->createQueryBuilder('r')
-            ->andWhere('r.returnDate IS NULL')
+            ->andWhere('r.return_date IS NULL')
             ->setParameter('value', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByBookNotReturn(int $value)
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.id = :val')
+            ->andWhere('b.return_date IS NULL')
+            ->setParameter('val', $value)
             ->getQuery()
             ->getResult()
         ;

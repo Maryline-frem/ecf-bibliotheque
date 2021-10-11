@@ -57,6 +57,7 @@ class TestController extends AbstractController
 
 
         // Les livres
+        // Requêtes de lecture :
         // Récupération de la liste complète de tous les livres.
         $books = $bookRepository->findAll();
         // dump($books);
@@ -79,6 +80,7 @@ class TestController extends AbstractController
         $book = $bookRepository->findByKind($kind);
         // dump($book);
 
+        // Requêtes de création :
         // Ajouter un nouveau livre.
         // Récupération de la liste complète des authors.
         $authors = $authorRepository->findAll();
@@ -100,7 +102,6 @@ class TestController extends AbstractController
 
         $entityManager->persist($book);
         $entityManager->flush();
-        // dump($book);
 
         // Requêtes de mise à jour.
         // Récupération de la liste complète des kinds.
@@ -177,10 +178,18 @@ class TestController extends AbstractController
 
         // Les emprunts
         // La liste des 10 derniers emprunts au niveau chronologique.
+        $borrowings = $borrowingRepository->findByBorrowing();
+        // dump($borrowings);
 
         // La liste des emprunts de l'emprunteur dont l'id est `2`.
+        $id = [2];
+        $borrower = $borrowingRepository->findByBorrower($id);
+        // dump($borrower);
 
         // La liste des emprunts du livre dont l'id est `3`.
+        $id = [3];
+        $book = $borrowingRepository->findByBook(3);
+        // dump($book);
 
         // La liste des emprunts qui ont été retournés avant le 01/01/2021.
         $date = '2021-01-01';
@@ -188,13 +197,14 @@ class TestController extends AbstractController
         // dump($borrowings);
 
         // La liste des emprunts qui n'ont pas encore été retournés (c-à-d dont la date de retour est nulle).
-        // A REVOIR
         $notReturn = NULL;
         $borrowings = $borrowingRepository->findByReturn($notReturn);
         // dump($borrowings);
 
         // Les données de l'emprunt du livre dont l'id est `3` et qui n'a pas encore été retournés (c-à-d dont la date de retour est nulle).
-
+        $id = [3];
+        $borrowing = $borrowingRepository->findByBookNotReturn($id);
+        // dump($borrowing);
 
         // Requêtes de création.
         // Récupération de la liste complète des borrowers.
@@ -205,26 +215,32 @@ class TestController extends AbstractController
         $books = $bookRepository->findAll();
         // Affectation d'un book à la variable $book.
         $book = $books[0];
+
         // Création d'un nouvel emprunt.
         $borrowing = new Borrowing();
         $borrowing->setBorrowingDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-12-01 16:00:00'));
         $borrowing->setBorrower($borrower);
         $borrowing->setBook($book);
-
         // $entityManager->persist($borrowing);
         // $entityManager->flush();
         // dump($borrowing);
 
-        // Requêtes de mise à jour.
-        // Modifier l'emprunt dont l'id est `3`.
-        $borrowing = $borrowingRepository->findAll()[2];
-        
-        // $borrowing->setReturnDate('Y-m-d H:i:s', '2020-05-01 10:00:00');
+        // // Requêtes de mise à jour.
+        // // Modifier l'emprunt dont l'id est `3`.
+        // $borrowings = $borrowingRepository->findAll();
+        // // Affectation d'un borrowing à la variable $borrower.
+        // $borrowing = $borrowings[2];
+        // $borrowing->setReturnDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-05-01 10:00:00'));
+        // $entityManager->persist($borrowing);
         // $entityManager->flush();
         // dump($borrowing);
 
-        // Requêtes de suppression.
-        // Supprimer l'emprunt dont l'id est `42`.
+        // // Requêtes de suppression.
+        // // Supprimer l'emprunt dont l'id est `42`.
+        // $id = [41];
+        // $borrowing = $borrowingRepository->find($id);
+        // $entityManager->remove($borrowing);
+        // $entityManager->flush();
 
         exit();
     }
